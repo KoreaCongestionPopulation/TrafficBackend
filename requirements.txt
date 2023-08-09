@@ -1,0 +1,8 @@
+aiokafka
+aiohttp
+pandas
+numpy
+requests
+xmltodict
+fastapi
+uvicorn
