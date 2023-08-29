@@ -1,31 +1,33 @@
 version: "3"
 
 services:
-  sql:
-    container_name: coin-sql
-    image: mysql
-    ports:
-      - "3307:3306"
-    env_file:
-      - ./.env
-    environment:
-      - MYSQL_DATABASE=${DB_DATABASE}
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
-      - MYSQL_USERNAME=${DB_USERNAME}
-      - TZ=Asia/Seoul
-    command:
-      - --default-authentication-plugin=mysql_native_password
-      - --collation-server=utf8mb4_unicode_ci
-      - --character-set-server=utf8mb4
-      - --lower_case_table_names=1
-    volumes:
-      - mysql_data:/var/lib/mysql
+  # traffic_sql:
+  #   container_name: traffic_sql
+  #   image: mysql:8
+  #   ports:
+  #     - "3307:3306"
+  #   env_file:
+  #     - ./.env
+  #   environment:
+  #     - MYSQL_DATABASE=${DB_DATABASE}
+  #     - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+  #     - MYSQL_USERNAME=${DB_USERNAME}
+  #     - TZ=Asia/Seoul
+  #   command:
+  #     - --default-authentication-plugin=caching_sha2_password
+  #     - --collation-server=utf8mb4_unicode_ci
+  #     - --character-set-server=utf8mb4
+  #     - --lower_case_table_names=1
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #     - ./my-init:/docker-entrypoint-initdb.d
+
     
-    healthcheck:
-        test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD']
-        interval: 10s
-        timeout: 2s
-        retries: 100
+  #   healthcheck:
+  #       test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD']
+  #       interval: 10s
+  #       timeout: 2s
+  #       retries: 100
 
 
   traffic_fastapi:
@@ -38,10 +40,16 @@ services:
       - 8084:8084
     volumes:
       - ./apps:/code/app
-    depends_on:
-      sql:
-        condition: service_healthy    
+    # depends_on:
+    #   traffic_sql:
+    #     condition: service_healthy    
+    networks:
+      - kafka-network
+      
+networks:
+  kafka-network:
+    external: true
 
 
-volumes:
-  mysql_data: {}
+# volumes:
+#   mysql_data: {}

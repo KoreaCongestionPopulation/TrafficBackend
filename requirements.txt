@@ -6,3 +6,10 @@ requests
 xmltodict
 fastapi
 uvicorn
+mysql-connector-python
+mysql
+pymysql
+aiomysql
+websockets
+sqlalchemy==1.4.42
+databases
